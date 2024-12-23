@@ -5,10 +5,11 @@ import { Ticket } from '@/data/dummyData'
 import Image from 'next/image'
 
 interface TicketGridProps {
-  tickets: Ticket[]
+  tickets: Ticket[];
+  onViewTicket: (ticket: Ticket) => void;
 }
 
-export default function TicketGrid({ tickets }: TicketGridProps) {
+export default function TicketGrid({ tickets, onViewTicket  }: TicketGridProps) {
   // State for sorting and filtering
   const [sortField, setSortField] = useState<keyof Ticket>('created')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
@@ -130,6 +131,9 @@ export default function TicketGrid({ tickets }: TicketGridProps) {
                 Created
                 <SortIndicator field="created" />
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                Actions
+               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -170,6 +174,32 @@ export default function TicketGrid({ tickets }: TicketGridProps) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {new Date(ticket.created).toLocaleDateString()}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <button
+                  onClick={() => onViewTicket(ticket)}
+                  className="text-primary hover:text-primary-dark transition-colors"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                </button>
+              </td>
               </tr>
             ))}
           </tbody>

@@ -3,13 +3,23 @@
 import { useState } from 'react'
 import TicketStats from '@/components/dashboard/TicketStats'
 import TicketGrid from '@/components/tickets/TicketGrid'
+import ViewTicketPanel from '@/components/tickets/ViewTicketPanel'
 import CreateTicketModal from '@/components/tickets/CreateTicketModal'
 import { useTickets } from '@/hooks/useTickets'
+import { Ticket } from '@/data/dummyData'
+
 
 export default function TicketsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [toast, setToast] = useState({ show: false, message: '' })
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  
   const { tickets, addTicket } = useTickets()
+  const handleViewTicket = (ticket: Ticket) => {
+    setSelectedTicket(ticket)
+    setIsPanelOpen(true)
+  }
 
   // Calculate stats from current tickets
   const stats = {
@@ -55,12 +65,21 @@ export default function TicketsPage() {
       </div>
 
       <TicketStats stats={stats} />
-      <TicketGrid tickets={tickets} />
+      <TicketGrid tickets={tickets} onViewTicket={handleViewTicket}  />
 
       <CreateTicketModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onTicketCreated={handleTicketCreated}
+      />
+
+    <ViewTicketPanel
+        ticket={selectedTicket}
+        isOpen={isPanelOpen}
+        onClose={() => {
+          setIsPanelOpen(false)
+          setSelectedTicket(null)
+        }}
       />
 
       {toast.show && (
