@@ -15,14 +15,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const router = useRouter()
-  const [user, setUser] = useState<any | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
+    const router = useRouter()
+    const [user, setUser] = useState<any | null>(null)
+    const [loading, setLoading] = useState(true)
+  
+    useEffect(() => {
+      const token = localStorage.getItem('user-token')
+      if (token) {
+        setUser({ token })
+        if (window.location.pathname === '/') {
+          router.push('/dashboard')
+        }
+      } else if (window.location.pathname !== '/login') {
+        router.push('/login')
+      }
+      setLoading(false)
+    }, [router])
+    
   const checkAuth = () => {
     try {
       const token = localStorage.getItem('user-token')
